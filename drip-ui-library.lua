@@ -1630,7 +1630,13 @@ function Tab:KeyBinder(config)
 	local callback = options.Callback or options.callback
 	local changedCallback = options.ChangedCallback or options.Changed or options.changed
 	local listening = false
-	local binding = makeKeyBinding(options.Default or options.default or options.Key or options.key)
+	local rawDefault = options.Default or options.default or options.Key or options.key
+	local binding
+	if typeof(rawDefault) == "EnumItem" and rawDefault.EnumType == Enum.UserInputType and MOUSE_BUTTON_NAMES[rawDefault] then
+		binding = makeMouseBinding(rawDefault)
+	else
+		binding = makeKeyBinding(rawDefault)
+	end
 
 	local holder = self:_createItemHolder(44)
 	local captureButton = make("TextButton", {
